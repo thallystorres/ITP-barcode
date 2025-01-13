@@ -18,6 +18,3 @@ int calcularDigitoVerificador(int ean[7]) {
     
     return digitoVerificador;
 }
-
-//OIIIIIIIIII
-
