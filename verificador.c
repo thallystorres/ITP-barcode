@@ -20,4 +20,4 @@ int calcularDigitoVerificador(int ean[7]) {
 }
 
 //OIIIIIIIIII
-
+//olá
