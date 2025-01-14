@@ -33,7 +33,6 @@ int* tratarIdentificador(const char *input)
     }
     return num;
 }
-
 int main(int argc, char const *argv[])
 {
     if (argc < 2)

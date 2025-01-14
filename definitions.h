@@ -3,6 +3,6 @@
 #define DIGITO_VERIFICADOR_H
 
 // Declaração da função calcularDigitoVerificador
-int calcularDigitoVerificador(int ean[9]);
+int calcularDigitoVerificador(int ean[8]);
 
 #endif // DIGITO_VERIFICADOR_H
