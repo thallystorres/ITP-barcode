@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "definitions.h"
 #include "verificador.c"
 //Tratamento do primeiro parâmetro
@@ -27,25 +28,39 @@ int* tratarIdentificador(const char *input)
         num[i] = input[i] - '0';
     }
     //Verificamos se o dígito final é válido
-    if(verificarDigito(num) != 1){
+    if(verificarDigitoVerificador(num) != 1){
         printf("Erro: Dígito verificador inválido.\n");
         return NULL;
     }
     return num;
 }
+
 int main(int argc, char const *argv[])
 {
-    if (argc < 2)
+    if (argc < 2 || argc > 6)
     {
         printf("Uso: %s <identificador> [espacamento_lateral] [quantidade_pixels_area] [altura_barras] [nome_imagem]\n", argv[0]);
         return 1;
     }
-    const char *input = argv[1];
-    tratarIdentificador(input);
-    if (argc > 6)
+    const char *identificador = argv[1];
+    int espaco_lateral = (argc > 2) ? atoi(argv[2]) : 4;
+    int pixel_area = (argc > 3) ? atoi(argv[3]) : 3;
+    int altura_barra = (argc > 4) ? atoi(argv[4]) : 50;
+    const char *nome_arquivo = (argc > 5) ? argv[5] : "codigo_de_barras.pbm";
+    int *new_identificador = tratarIdentificador(identificador);
+    FILE *arquivo = fopen(nome_arquivo, "r");
+    if(arquivo)
     {
-        printf("Aviso: Apenas o primeiro parâmetro obrigatório e cinco opcionais são aceitos.\n");
+        fclose(arquivo);
+        char resposta;
+        printf("O arquivo %s já existe. Deseja sobrecrevê-lo? (s/n): ", nome_arquivo);
+        resposta == getchar();
+        if(resposta != 's' && resposta != 'S')
+        {
+            printf("Erro: Arquivo já existe.\n");
+            return 1;
+        }
     }
-    
+
     return 0;
 }

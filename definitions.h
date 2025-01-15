@@ -2,7 +2,8 @@
 #ifndef DIGITO_VERIFICADOR_H
 #define DIGITO_VERIFICADOR_H
 
-// Declaração da função calcularDigitoVerificador
-int calcularDigitoVerificador(int ean[8]);
+// Declaração de funções
+int calculaDigitoVerificador(int *verificador);
+int verificarDigitoVerificador(int *verificador);
 
 #endif // DIGITO_VERIFICADOR_H

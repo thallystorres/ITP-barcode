@@ -2,33 +2,19 @@
 #include "definitions.h"
 
 // Função para calcular o dígito verificador
-int verificarDigito(int ean[8])
-    {
-        int soma = 0;
-
-    // Calcula a soma dos dígitos com os pesos
-    for (int i = 0; i < 7; i++)
-    {
-        if (i % 2 == 0)
-        {
-            soma += ean[i] * 3; // Multiplica os dígitos nas posições ímpares por 3
-        }
-        else
-        {
-            soma += ean[i]; // Multiplica os dígitos nas posições pares por 1
-        }
+int calculaDigitoVerificador(int *identificador) {
+    int soma = 0;
+    for (int i = 0; i < 8 - 1; i++) {
+        int peso = (i % 2 == 0) ? 3 : 1; //Verifica o peso do dígito, se for par peso 3 se for ímpar peso 1
+        soma += (identificador[i]) * peso; //Soma os dígitos
     }
+    int digito_verificador = (10 - (soma % 10)) % 10; //Define o digito identificador usando mod
+    return digito_verificador;
+}
 
-    // Calcula o dígito verificador
-    int digitoVerificador = (10 - (soma % 10)) % 10;
+int verificarDigitoVerificador(int *identificador)
+    {
+    int digito_verificador = calculaDigitoVerificador(identificador);
     // Se o dígito verificador não estiver de acordo com o cálculo, retorne 1 para verdadeiro ou 0 para falso
-    if(digitoVerificador == ean[7])
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-    
+    return (digito_verificador == identificador[7]);
 }
