@@ -35,6 +35,33 @@ int* tratarIdentificador(const char *input)
     return num;
 }
 
+void gerarArquivoPBM(int *verificador, int espaco_lateral, int pixel_area, int altura_barra, const char *nome_arquivo)
+{
+    int largura = 67 * 3 + 2 * espaco_lateral;
+    FILE *arquivo = fopen(nome_arquivo, "w");
+    if(arquivo == NULL) {
+        printf("Erro ao criar o arquivo.\n");
+        return;
+    }
+    char *stringArea = criarStringArea(verificador);
+    fprintf(arquivo, "P1\n%d %d\n", largura, altura_barra);
+    for (int i = 0; i < altura_barra; i++)
+    {
+        printarLateral(arquivo, espaco_lateral);
+        for (int j = 0; j < 67; j++)
+        {
+            for (int k = 0; k < pixel_area; k++)
+            {
+                fprintf(arquivo, "%c ", stringArea[j]);
+            }
+        }
+        printarLateral(arquivo, espaco_lateral);
+        fprintf(arquivo, "\n");
+    }
+    fclose(arquivo);
+    free(stringArea);
+}
+
 int main(int argc, char const *argv[])
 {
     if (argc < 2 || argc > 6)
