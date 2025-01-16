@@ -18,7 +18,7 @@ DigitCode codes[] =
     };
 
 //Função que recebe o verificador analisado pela função verificarDigitoVerificador() e retorna um array de strings que representa cada número em l/r-code
-char** transformarCode(int *verificador)
+char** transformar_code(int *verificador)
 {
     //Alocação do array que irá ser retornado
     char **final = (char **)malloc(8 * sizeof(char *));
@@ -58,7 +58,7 @@ char** transformarCode(int *verificador)
 }
 
 //Função utilizada para imprimir os espaçamentos horizontais do arquivo pbm, recebe o endereço do arquivo e o espaçamento que deverá ser feito
-void printarHorizontal(FILE *arquivo, int espaco_lateral)
+void printar_horizontal(FILE *arquivo, int espaco_lateral)
 {
     //For loop que conta quantos caracteres precisará imprimir
     for (int i = 0; i < espaco_lateral; i++)
@@ -70,7 +70,7 @@ void printarHorizontal(FILE *arquivo, int espaco_lateral)
 }
 
 //De forma análoga, imprime o espaçamento vertical do arquivo pbm, recebe o endereço do arquivo, o espaçamento que deverá ser feito e a largura horizontal do arquivo
-void printarVertical(FILE *arquivo, int largura, int espaco_lateral)
+void printar_vertical(FILE *arquivo, int largura, int espaco_lateral)
 {
     //For loop que irá passar por todos os espaços laterais exigidos
     for (int j = 0; j < espaco_lateral; j++)
@@ -87,10 +87,10 @@ void printarVertical(FILE *arquivo, int largura, int espaco_lateral)
 }
 
 //Função que retornará a string que define a área de barras, recebendo como parâmetro o verificador EAN
-char* criarStringArea(int *verificador)
+char* criar_string_area(int *verificador)
 {
     //Codifica o verificador para EAN-8
-    char **codigo = transformarCode(verificador);
+    char **codigo = transformar_code(verificador);
     //Alocação dinâmica da string que será retornada na função. A string terá 67 dígitos, já que é o total de áreas em um código de barras.
     char *string_area = (char *)malloc((67+1) * sizeof(char));
     //Todos os dígitos da string serão inicializados com \0 para garantir que não haja vazamento
@@ -118,7 +118,7 @@ char* criarStringArea(int *verificador)
 }
 
 //Função chave para gerar o arquivo PBM em si, recebendo como parâmetro todos os argumentos de linha de comando
-void gerarArquivoPBM(int *verificador, int espaco_lateral, int pixel_area, int altura_barra, const char *nome_arquivo)
+void gerar_arquivo_pbm(int *verificador, int espaco_lateral, int pixel_area, int altura_barra, const char *nome_arquivo)
 {
     //Para imprimir no arquivo ".pbm" calculamos de forma simples a largura, que se dá pelo número de áreas (sempre será 67 em EAN-8) vezes a quantidade de pixels por área, somada aos pixels de espaço lateral multiplicados por dois por serem contados da esquerda e direita
     int largura = 67 * pixel_area + 2 * espaco_lateral;
@@ -131,16 +131,16 @@ void gerarArquivoPBM(int *verificador, int espaco_lateral, int pixel_area, int a
         printf("Erro ao criar o arquivo.\n");
         return;
     }
-    char *string_area = criarStringArea(verificador); //Utilizando a função de criar string de área
+    char *string_area = criar_string_area(verificador); //Utilizando a função de criar string de área
     //Imprimindo o cabeçalho P1, com informações da largura e altura calculadas
     fprintf(arquivo, "P1\n%d %d\n", largura, altura_total);
     //Imprimindo as linhas verticais iniciais
-    printarVertical(arquivo, largura, espaco_lateral);
+    printar_vertical(arquivo, largura, espaco_lateral);
     //Inicio do for loop que irá imprimir as linhas horizontais, utilizando como delimitador a altura das barras
     for (int i = 0; i < altura_barra; i++)
     {
         //Imprimindo o espaçamento horizontal direito
-        printarHorizontal(arquivo, espaco_lateral);
+        printar_horizontal(arquivo, espaco_lateral);
         //Para cada dígito na string área
         for (int j = 0; j < 67; j++)
         {
@@ -151,12 +151,12 @@ void gerarArquivoPBM(int *verificador, int espaco_lateral, int pixel_area, int a
             }
         }
         //Imprimindo o espaçamento horizontal esquerdo
-        printarHorizontal(arquivo, espaco_lateral);
+        printar_horizontal(arquivo, espaco_lateral);
         //Quebrando linha
         fprintf(arquivo, "\n");
     }
     //Imprimindo as linhas verticais finais
-    printarVertical(arquivo, largura, espaco_lateral);
+    printar_vertical(arquivo, largura, espaco_lateral);
     //Fechando arquivo para evitar erros de subscrição
     fclose(arquivo);
     //Liberando a memória da string_area utilizada
@@ -164,7 +164,7 @@ void gerarArquivoPBM(int *verificador, int espaco_lateral, int pixel_area, int a
 }
 
 //Função de verificação de existência de arquivo
-int arquivoExiste(const char *nome_arquivo) {
+int arquivo_existe(const char *nome_arquivo) {
     //Abrindo arquivo para leitura
     FILE *arquivo = fopen(nome_arquivo, "r");
     //Se arquivo existir, fecha imediatamente e retorna verdadeiro

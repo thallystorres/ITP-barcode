@@ -7,7 +7,7 @@
 #include "pbm.c"
 
 //Tratamento do primeiro parâmetro
-int* tratarIdentificador(const char *input)
+int* tratar_identificador(const char *input)
 {
     //Verificamos se está do tamanho correto
     if (strlen(input) != 8)
@@ -30,7 +30,7 @@ int* tratarIdentificador(const char *input)
         num[i] = input[i] - '0';
     }
     //Verificamos se o dígito final é válido
-    if(verificarDigitoVerificador(num) != 1){
+    if(verificar_digito_verificador(num) != 1){
         printf("Erro: Dígito verificador inválido.\n");
         return NULL;
     }
@@ -57,20 +57,20 @@ int main(int argc, char const *argv[])
     //Se for dado seis argumentos, o sexto será o nome do arquivo a ser criado, caso não for passasdo, adota o nome template "codigo_de_barras.pbm"
     const char *nome_arquivo = (argc > 5) ? argv[5] : "codigo_de_barras.pbm";
     //Tratamento do identificador passado como argumento usando a função tratarIdentificador
-    int *new_identificador = tratarIdentificador(identificador);
+    int *new_identificador = tratar_identificador(identificador);
     //Verificando se o identificador novo é válido ou não, caso não, encerra o programa
     if (new_identificador == NULL)
     {
         return 1;
     }
     //Verificando a já existência do arquivo
-    if(arquivoExiste(nome_arquivo))
+    if(arquivo_existe(nome_arquivo))
     {
         //Declarando char de resposta s/n
         char resposta;
         printf("O arquivo %s já existe. Deseja sobrecrevê-lo? (s/n): ", nome_arquivo);
         resposta = getchar();
-        //Se resposta for sim, então finaliza-se o programa
+        //Se resposta for não, então finaliza-se o programa
         if(resposta != 's' && resposta != 'S')
         {
             printf("Erro: Arquivo já existe.\n");
@@ -78,6 +78,6 @@ int main(int argc, char const *argv[])
         }
     }
     //Gerando arquivo .pbm e encerrando o programa
-    gerarArquivoPBM(new_identificador, espaco_lateral, pixel_area, altura_barra, nome_arquivo);
+    gerar_arquivo_pbm(new_identificador, espaco_lateral, pixel_area, altura_barra, nome_arquivo);
     return 0;
 }
