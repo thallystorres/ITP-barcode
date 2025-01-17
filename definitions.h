@@ -6,14 +6,19 @@
 int calcula_digito_verificador(int *verificador);
 int verificar_digito_verificador(int *verificador);
 
-//Funções declaradas no pbm.c
+//Funções declaradas no manipularpbm.c
 char** transformar_code(int *verificador);
 void printar_horizontal(FILE *arquivo, int espaco_lateral);
 void printar_vertical(FILE *arquivo, int largura, int espaco_lateral);
 char* criar_string_area(int *verificador);
 void gerar_arquivo_pbm(int *verificador, int espaco_lateral, int pixel_area, int altura_barra, const char *nome_arquivo);
+//Funções declaradas no analisepbm.c
 int arquivo_existe(const char *nome_arquivo);
-
+int tem_extensao_pbm(const char *nome_arquivo);
+void erro_encontrado(FILE *arquivo);
+void verificar_validade_pbm(FILE *arquivo);
+void registrar_dimensao_pbm(FILE *arquivo, int *largura, int *altura);
+void analisar_espacamento_lateral(FILE *arquivo, int largura, int *espacamento_lateral);
 //Struct definido para a tabela de r/l-code
 typedef struct {
     int digit;

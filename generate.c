@@ -4,8 +4,8 @@
 #include <ctype.h>
 #include "definitions.h"
 #include "verificador.c"
-#include "pbm.c"
-
+#include "manipularpbm.c"
+#include "analisepbm.c"
 //Tratamento do primeiro parâmetro
 int* tratar_identificador(const char *input)
 {
@@ -42,7 +42,7 @@ int main(int argc, char const *argv[])
     //Verificando os argumentos passados por linha de comando, se não obedecerem o total e mínimo requerido o programa se encerra
     if (argc < 2 || argc > 6)
     {
-        printf("Uso: %s <identificador> [espacamento_lateral] [quantidade_pixels_area] [altura_barras] [nome_imagem]\n", argv[0]);
+        printf("Uso: %s <identificador> [espacamento_lateral] [quantidade_pixels_area] [altura_barras] [nome_imagem.pbm]\n", argv[0]);
         return 1;
     }
     //Direcionando cada argumento para uma variável
@@ -61,6 +61,12 @@ int main(int argc, char const *argv[])
     //Verificando se o identificador novo é válido ou não, caso não, encerra o programa
     if (new_identificador == NULL)
     {
+        return 1;
+    }
+    //Verificando se o argumento passado é de um arquivo .pbm
+    if(!tem_extensao_pbm(nome_arquivo))
+    {
+        printf("Erro: Nome de arquivo não suportado, por favor inserir nome de arquivo com extensão .pbm\n");
         return 1;
     }
     //Verificando a já existência do arquivo

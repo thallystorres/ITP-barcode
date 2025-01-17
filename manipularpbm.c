@@ -162,15 +162,3 @@ void gerar_arquivo_pbm(int *verificador, int espaco_lateral, int pixel_area, int
     //Liberando a memória da string_area utilizada
     free(string_area);
 }
-
-//Função de verificação de existência de arquivo
-int arquivo_existe(const char *nome_arquivo) {
-    //Abrindo arquivo para leitura
-    FILE *arquivo = fopen(nome_arquivo, "r");
-    //Se arquivo existir, fecha imediatamente e retorna verdadeiro
-    if (arquivo) {
-        fclose(arquivo);
-        return 1;
-    }
-    return 0;
-}
