@@ -75,7 +75,7 @@ void registrar_dimensao_pbm(FILE *arquivo, int *largura, int *altura)
     }
 }
 
-void analisar_espacamento_lateral(FILE *arquivo, int largura, int *espacamento_lateral)
+void pegar_espacamento_codigo(FILE *arquivo, int largura, int *espacamento_lateral, char* codigo_barra)
 {
     int contador = 0;
     int condicao = 0;
@@ -94,4 +94,16 @@ void analisar_espacamento_lateral(FILE *arquivo, int largura, int *espacamento_l
         contador++;
     }
     *espacamento_lateral = contador;
+    strcpy(codigo_barra, linha);
+}
+
+char* criar_verificador(char *codigo_barra, int espacamento_lateral, int area)
+{
+    char *verificador = malloc(68 * sizeof(char));
+    verificador[67] = '\0';
+    for (int i = 0; i < 67; i++)
+    {
+        verificador[i] = codigo_barra[i * area * 2 + (espacamento_lateral * 2)];
+    }
+    return verificador;
 }

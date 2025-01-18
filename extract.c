@@ -28,8 +28,10 @@ int main(int argc, char const *argv[])
     verificar_validade_pbm(arquivo);
     int largura, altura, espacamento_lateral;
     registrar_dimensao_pbm(arquivo, &largura, &altura);
-    analisar_espacamento_lateral(arquivo, largura, &espacamento_lateral);
-    printf("%d", espacamento_lateral);
+    char *codigo_barra = malloc((largura+1)*2*sizeof(char));
+    pegar_espacamento_codigo(arquivo, largura, &espacamento_lateral, codigo_barra);
+    int area = (largura - (2 * espacamento_lateral))/67;
+    free(codigo_barra);
     fclose(arquivo);
     return 0;
 }
