@@ -1,37 +1,21 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "definitions.h"
-//Declaração de variável global de tabela de traduação para l/r-code
-DigitCode codes[] = 
-    {
-        {0, "0001101", "1110010"},
-        {1, "0011001", "1100110"},
-        {2, "0010011", "1101100"},
-        {3, "0111101", "1000010"},
-        {4, "0100011", "1011100"},
-        {5, "0110001", "1001110"},
-        {6, "0101111", "1010000"},
-        {7, "0111011", "1000100"},
-        {8, "0110111", "1001000"},
-        {9, "0001011", "1110100"}
-    };
 
 //Função que recebe o verificador analisado pela função verificarDigitoVerificador() e retorna um array de strings que representa cada número em l/r-code
 char** transformar_code(int *verificador)
 {
     //Alocação do array que irá ser retornado
-    char **final = (char **)malloc(8 * sizeof(char *));
+    char **final;
+    final = malloc(TAMANHO_IDENTIFICADOR * sizeof(char *));
     if (final == NULL)
     {
         perror("Erro ao alocar memória");
         return NULL;
     }
     //For loop que passa por cada dígito do verificador EAN 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < TAMANHO_IDENTIFICADOR; i++)
     {
         //Alocação da string de índice i
-        final[i] = malloc(8 * sizeof(char));
+        final[i] = malloc(TAMANHO_DIGITO + 1 * sizeof(char));
         //For loop aninhado que passará por todos os dígitos da tabela para verificar em qual dígito se encaixa
         for (int j = 0; j < 10; j++)
         {   
@@ -92,22 +76,32 @@ char* criar_string_area(int *verificador)
     //Codifica o verificador para EAN-8
     char **codigo = transformar_code(verificador);
     //Alocação dinâmica da string que será retornada na função. A string terá 67 dígitos, já que é o total de áreas em um código de barras.
-    char *string_area = (char *)malloc((67+1) * sizeof(char));
+    char *string_area;
+    string_area = malloc((TAMANHO_CODIGO_BARRAS+1) * sizeof(char));
     //Todos os dígitos da string serão inicializados com \0 para garantir que não haja vazamento
-    memset(string_area, '\0', 68);
+    memset(string_area, '\0', TAMANHO_CODIGO_BARRAS+1);
     //Por definição dos códigos de barra, os três primeiros e últimos dígitos são sempre "101" e os cinco dígitos centrais sempre seão "01010"
-    strncpy(string_area, "101", 3);
-    strncpy(string_area + 31, "01010", 5);
-    strncpy(string_area + 64, "101", 3);
-    int index = 3; //Começar após os 3 primeiros caracteres
+    
+    memcpy(string_area, STRING_INICIAL_FINAL, TAMANHO_INICIAL_FINAL);
+    string_area[TAMANHO_INICIAL_FINAL] = '\0';  // Garantir o '\0' após a cópia
+    
+    memcpy(string_area + TAMANHO_INICIAL_FINAL + (TAMANHO_DIGITO * TAMANHO_L_R), STRING_CENTRAL, TAMANHO_CENTRAL);
+    string_area[TAMANHO_INICIAL_FINAL + (TAMANHO_DIGITO * TAMANHO_L_R) + TAMANHO_CENTRAL] = '\0';  // Garantir o '\0' após a cópia
+    
+    memcpy(string_area + TAMANHO_CODIGO_BARRAS - TAMANHO_INICIAL_FINAL, STRING_INICIAL_FINAL, TAMANHO_INICIAL_FINAL);
+    string_area[TAMANHO_CODIGO_BARRAS - TAMANHO_INICIAL_FINAL + TAMANHO_INICIAL_FINAL] = '\0';  // Garantir o '\0' após a cópia
+    
+    int index = TAMANHO_INICIAL_FINAL; //Começar após os 3 primeiros caracteres
     //For loop que irá analisar cada item do vetor de strings codificadas
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < TAMANHO_IDENTIFICADOR; i++) {
         //For loop que irá analisar cada dígito dos itens do vetor de strings codificadas
-        for (int j = 0; j < 7; j++) {
-            if (index >= 31 && index < 36) {
-                index = 36; //Pular os caracteres reservados para "01010"
+        for (int j = 0; j < TAMANHO_DIGITO; j++) {
+            if (index >= TAMANHO_INICIAL_FINAL + (TAMANHO_DIGITO*TAMANHO_L_R) && index < TAMANHO_INICIAL_FINAL + (TAMANHO_DIGITO*TAMANHO_L_R) + TAMANHO_CENTRAL) 
+            {
+                index = TAMANHO_INICIAL_FINAL + (TAMANHO_DIGITO*TAMANHO_L_R) + TAMANHO_CENTRAL; //Pular os caracteres reservados para "01010"
             }
-            if (index >= 64) {
+            if (index >= TAMANHO_CODIGO_BARRAS - TAMANHO_INICIAL_FINAL) 
+            {
                 break; //Não ultrapassar o limite da string
             }
             //Aloca o caracter na nova string e adiciona um ao index
@@ -121,7 +115,7 @@ char* criar_string_area(int *verificador)
 void gerar_arquivo_pbm(int *verificador, int espaco_lateral, int pixel_area, int altura_barra, const char *nome_arquivo)
 {
     //Para imprimir no arquivo ".pbm" calculamos de forma simples a largura, que se dá pelo número de áreas (sempre será 67 em EAN-8) vezes a quantidade de pixels por área, somada aos pixels de espaço lateral multiplicados por dois por serem contados da esquerda e direita
-    int largura = 67 * pixel_area + 2 * espaco_lateral;
+    int largura = TAMANHO_CODIGO_BARRAS * pixel_area + 2 * espaco_lateral;
     //De mesma forma, calculamos a altura somando o argumento passado na linha de comando com o dobro dos pixels de espaço lateral, por serem contados de cima e de baixo
     int altura_total = altura_barra + 2 * espaco_lateral;
     //Criação do FILE arquivo, e abrindo para escrita, passando como parâmetro o nome do arquivo dado na linha de comando
@@ -142,7 +136,7 @@ void gerar_arquivo_pbm(int *verificador, int espaco_lateral, int pixel_area, int
         //Imprimindo o espaçamento horizontal direito
         printar_horizontal(arquivo, espaco_lateral);
         //Para cada dígito na string área
-        for (int j = 0; j < 67; j++)
+        for (int j = 0; j < TAMANHO_CODIGO_BARRAS; j++)
         {
             //Para esse dígito, irá imprimir até o número de pixels por área passado como argumento
             for (int k = 0; k < pixel_area; k++)

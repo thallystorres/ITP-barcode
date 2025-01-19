@@ -2,9 +2,26 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+//includes comuns
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+
+#define TAMANHO_IDENTIFICADOR 8
+#define TAMANHO_DIGITO 7
+#define TAMANHO_CODIGO_BARRAS 67
+#define TAMANHO_INICIAL_FINAL 3
+#define TAMANHO_CENTRAL 5
+#define TAMANHO_L_R 4
+#define STRING_INICIAL_FINAL "101"
+#define STRING_CENTRAL "01010"
+
 //Funções declaradas no verificador.c
 int calcula_digito_verificador(int *verificador);
-int verificar_digito_verificador(int *verificador);
+int validar_digito_verificador(int *verificador);
+int* tratar_identificador(const char *input);
 
 //Funções declaradas no manipularpbm.c
 char** transformar_code(int *verificador);
@@ -17,16 +34,16 @@ int arquivo_existe(const char *nome_arquivo);
 int tem_extensao_pbm(const char *nome_arquivo);
 void erro_encontrado(FILE *arquivo);
 void verificar_validade_pbm(FILE *arquivo);
-void registrar_dimensao_pbm(FILE *arquivo, int *largura, int *altura);
-void pegar_espacamento_codigo(FILE *arquivo, int largura, int *espacamento_lateral, char* codigo_barra);
-char* criar_verificador(char *codigo_barra, int espacamento_lateral, int area);
-char* apenas_digitos(char *verificador);
-char* traduzir_numeros(char *new_verificador);
+void extrair_dimensao_pbm(FILE *arquivo, int *largura, int *altura);
+void extrair_espacamento_codigo(FILE *arquivo, int largura, int *espacamento_lateral, char* codigo_barra);
+//Funções declaradas no analisarcodigo.pbm
+void manipular_codigo_barra(char *codigo_barra, int espacamento_lateral, int area);
+int* traduzir_numeros(char *new_verificador);
 //Struct definido para a tabela de r/l-code
 typedef struct {
     int digit;
-    char l_code[8];
-    char r_code[8];
+    char l_code[TAMANHO_DIGITO+1];
+    char r_code[TAMANHO_DIGITO+1];
 } DigitCode;
 
 //Externalizando fator global

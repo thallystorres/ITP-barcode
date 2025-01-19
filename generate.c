@@ -1,41 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 #include "definitions.h"
-#include "verificador.c"
-#include "manipularpbm.c"
-#include "analisepbm.c"
-//Tratamento do primeiro parâmetro
-int* tratar_identificador(const char *input)
-{
-    //Verificamos se está do tamanho correto
-    if (strlen(input) != 8)
-    {
-        printf("Erro: o número deve conter exatamente 8 dígitos\n");
-        return NULL;
-    }
-    //Alocamos dinamicamente o vetor que irá ser retornado no final
-    int *num = malloc(8 * sizeof(int));
-    for (int i = 0; i < 8; i++)
-    {
-        //Verificamos se todos os dígitos são de fato números
-        if (input[i] < '0' || input[i] > '9')
-        {
-            printf("Erro: Apenas números são permitidos.\n");
-            free(num);
-            return NULL;
-        }
-        //Alocamos cada novo dígito como um número no vetor novo
-        num[i] = input[i] - '0';
-    }
-    //Verificamos se o dígito final é válido
-    if(verificar_digito_verificador(num) != 1){
-        printf("Erro: Dígito verificador inválido.\n");
-        return NULL;
-    }
-    return num;
-}
 
 int main(int argc, char const *argv[])
 {

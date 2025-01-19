@@ -1,9 +1,18 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 #include "definitions.h"
-#include "manipularpbm.c"
+
+//Função de verificação de existência de arquivo
+int arquivo_existe(const char *nome_arquivo) {
+    //Abrindo arquivo para leitura
+    FILE *arquivo = fopen(nome_arquivo, "r");
+    //Se arquivo existir, fecha imediatamente e retorna verdadeiro
+    if (arquivo) 
+    {
+        fclose(arquivo);
+        return 1;
+    }
+    return 0;
+}
+
 //Função de verificação de extensão .pbm
 int tem_extensao_pbm(const char *nome_arquivo)
 {
@@ -23,19 +32,6 @@ void erro_encontrado(FILE *arquivo)
 {
     fclose(arquivo); //Fecha arquivo
     exit(1); //Fim de código
-}
-
-//Função de verificação de existência de arquivo
-int arquivo_existe(const char *nome_arquivo) {
-    //Abrindo arquivo para leitura
-    FILE *arquivo = fopen(nome_arquivo, "r");
-    //Se arquivo existir, fecha imediatamente e retorna verdadeiro
-    if (arquivo) 
-    {
-        fclose(arquivo);
-        return 1;
-    }
-    return 0;
 }
 
 //Função que recebe o arquivo enviado e verifique se é válido ou não, possui diversas condicionais que buscam analisar cada problema possível
@@ -61,9 +57,9 @@ void verificar_validade_pbm(FILE *arquivo)
 }
 
 //Função que registra em dois ponteiros a largura e altura do bpm, passadas na segunda linha
-void registrar_dimensao_pbm(FILE *arquivo, int *largura, int *altura)
+void extrair_dimensao_pbm(FILE *arquivo, int *largura, int *altura)
 {
-    char linha[100]; //Iniciando string que recebe a segunda linha inteira
+    char linha[50]; //Iniciando string que recebe a segunda linha inteira
     if (fgets(linha, sizeof(linha), arquivo) != NULL)
     {
         sscanf(linha, "%d %d", largura, altura); //Caso a linha esteja na formatação "%d %d", escaneia ints
@@ -75,84 +71,24 @@ void registrar_dimensao_pbm(FILE *arquivo, int *largura, int *altura)
     }
 }
 
-void pegar_espacamento_codigo(FILE *arquivo, int largura, int *espacamento_lateral, char* codigo_barra)
+//Função que extrai o espaçamento lateral e a primeira linha do código de barras
+void extrair_espacamento_codigo(FILE *arquivo, int largura, int *espacamento_lateral, char* codigo_barra)
 {
-    int contador = 0;
-    int condicao = 0;
+    int contador = 0; //Contador que vai ser somado recursivamente a cada linha que contêm apenas 0
+
+    //String que irá comportar toda a linha extraída do arquivo. O tamanho da string tem essa forma por contar o número de caracteres 0's e 1's da linha, os espaçamentos (que são o dobro da largura + 1) e o char nulo '\0'
     char linha[(largura + 1) * 2];
-    while(fgets(linha, sizeof(linha), arquivo) != NULL)
-    {
-        for (int i = 0; linha[i] != '\0'; i++)
-        {
-            if(linha[i] == '1')
-            {
-                condicao = 1;
-                break;
-            }
-        }
-        if(condicao == 1) break;
-        contador++;
-    }
-    *espacamento_lateral = contador;
-    strcpy(codigo_barra, linha);
-}
 
-char* criar_verificador(char *codigo_barra, int espacamento_lateral, int area)
-{
-    char *verificador = malloc(68 * sizeof(char));
-    verificador[67] = '\0';
-    for (int i = 0; i < 67; i++)
+    //Enquanto houver linhas, analisa cada uma delas
+    while (fgets(linha, sizeof(linha), arquivo) != NULL)
     {
-        verificador[i] = codigo_barra[i * area * 2 + (espacamento_lateral * 2)];
-    }
-    return verificador;
-}
-
-char* apenas_digitos(char *verificador)
-{
-    char *new_verificador = malloc(57 * sizeof(char));
-    new_verificador[56] = '\0';
-    int contador = 0;
-    for (int i = 0; i < 67; i++)
-    {
-        if(i > 2 && i < 31 || i > 35 && i < 64)
+        if (strchr(linha, '1')) //Verifica se há '1' na linha, caso encontre, quebra o while
         {
-            new_verificador[contador] = verificador[i];
-            contador++;
+            break;
         }
+        contador++; //+1 ao contador a cada linha sem '1'
     }
-    return new_verificador;
-}
 
-char* traduzir_numeros(char *new_verificador)
-{
-    char *final = malloc(9 * sizeof(char));
-    final[8] = '\0';
-    for (int i = 0; i <= 50; i += 7)
-    {
-        char substring[8];
-        strncpy(substring, &new_verificador[i], 7);
-        substring[7] = '\0';
-        for (int j = 0; j < 10; j++)
-        {
-            if (i < 28)
-            {
-                if(strcmp(substring, codes[j].l_code) == 0)
-                {
-                    final[i/7] = '0' + j;
-                    break;
-                }
-            }
-            else
-            {
-                if(strcmp(substring, codes[j].r_code) == 0)
-                {
-                    final[i/7] = '0' + j;
-                    break;
-                }
-            }
-        }
-        
-    }
-    return final;
+    *espacamento_lateral = contador; //Atribui o valor de contador para o espaçamento lateral
+    strcpy(codigo_barra, linha); //Copia o código de barras extraído para a string
 }
