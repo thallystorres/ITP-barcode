@@ -20,6 +20,8 @@ void verificar_validade_pbm(FILE *arquivo);
 void registrar_dimensao_pbm(FILE *arquivo, int *largura, int *altura);
 void pegar_espacamento_codigo(FILE *arquivo, int largura, int *espacamento_lateral, char* codigo_barra);
 char* criar_verificador(char *codigo_barra, int espacamento_lateral, int area);
+char* apenas_digitos(char *verificador);
+char* traduzir_numeros(char *new_verificador);
 //Struct definido para a tabela de r/l-code
 typedef struct {
     int digit;

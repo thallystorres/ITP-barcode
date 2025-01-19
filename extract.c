@@ -30,8 +30,13 @@ int main(int argc, char const *argv[])
     registrar_dimensao_pbm(arquivo, &largura, &altura);
     char *codigo_barra = malloc((largura+1)*2*sizeof(char));
     pegar_espacamento_codigo(arquivo, largura, &espacamento_lateral, codigo_barra);
-    int area = (largura - (2 * espacamento_lateral))/67;
-    free(codigo_barra);
     fclose(arquivo);
+    int area = (largura - (2 * espacamento_lateral))/67;
+    char *verificador = criar_verificador(codigo_barra, espacamento_lateral, area);
+    char *new_verificador = apenas_digitos(verificador);
+    free(verificador);
+    char *final = traduzir_numeros(new_verificador);
+    free(new_verificador);
+    printf("%s", final);
     return 0;
 }

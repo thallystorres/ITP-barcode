@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "definitions.h"
-
+#include "manipularpbm.c"
 //Função de verificação de extensão .pbm
 int tem_extensao_pbm(const char *nome_arquivo)
 {
@@ -106,4 +106,53 @@ char* criar_verificador(char *codigo_barra, int espacamento_lateral, int area)
         verificador[i] = codigo_barra[i * area * 2 + (espacamento_lateral * 2)];
     }
     return verificador;
+}
+
+char* apenas_digitos(char *verificador)
+{
+    char *new_verificador = malloc(57 * sizeof(char));
+    new_verificador[56] = '\0';
+    int contador = 0;
+    for (int i = 0; i < 67; i++)
+    {
+        if(i > 2 && i < 31 || i > 35 && i < 64)
+        {
+            new_verificador[contador] = verificador[i];
+            contador++;
+        }
+    }
+    return new_verificador;
+}
+
+char* traduzir_numeros(char *new_verificador)
+{
+    char *final = malloc(9 * sizeof(char));
+    final[8] = '\0';
+    for (int i = 0; i <= 50; i += 7)
+    {
+        char substring[8];
+        strncpy(substring, &new_verificador[i], 7);
+        substring[7] = '\0';
+        for (int j = 0; j < 10; j++)
+        {
+            if (i < 28)
+            {
+                if(strcmp(substring, codes[j].l_code) == 0)
+                {
+                    final[i/7] = '0' + j;
+                    break;
+                }
+            }
+            else
+            {
+                if(strcmp(substring, codes[j].r_code) == 0)
+                {
+                    final[i/7] = '0' + j;
+                    break;
+                }
+            }
+        }
+        
+    }
+    return final;
 }
