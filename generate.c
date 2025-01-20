@@ -1,4 +1,4 @@
-#include "definitions.h"
+#include "resources/definitions.h"
 
 int main(int argc, char const *argv[])
 {

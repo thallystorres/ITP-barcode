@@ -1,4 +1,4 @@
-#include "definitions.h"
+#include "resources/definitions.h"
 
 int main(int argc, char const *argv[])
 {
@@ -40,6 +40,7 @@ int main(int argc, char const *argv[])
     {
         printf("%d", final[i]);
     }
+    printf("\n");
     free(codigo_barra); //Liberando memória de alocação dinâmica
     return 0;
 }
