@@ -14,8 +14,8 @@ TABELA_LR = $(SRC_DIR)/tabelalr.c
 VERIFICADOR = $(SRC_DIR)/verificador.c
 
 # Objetos
-OBJECTS_EXTRACT = $(BUILD_DIR)/analisarcodigo.o $(BUILD_DIR)/analisepbm.o $(BUILD_DIR)/tabelalr.o $(BUILD_DIR)/verificador.o
-OBJECTS_GENERATE = $(BUILD_DIR)/manipularpbm.o $(BUILD_DIR)/analisepbm.o $(BUILD_DIR)/tabelalr.o $(BUILD_DIR)/verificador.o
+OBJECTS_EXTRACT = $(BUILD_DIR)/manipularpbm.o $(BUILD_DIR)/analisarcodigo.o $(BUILD_DIR)/analisepbm.o $(BUILD_DIR)/tabelalr.o $(BUILD_DIR)/verificador.o
+OBJECTS_GENERATE = $(BUILD_DIR)/manipularpbm.o $(BUILD_DIR)/analisarcodigo.o $(BUILD_DIR)/analisepbm.o $(BUILD_DIR)/tabelalr.o $(BUILD_DIR)/verificador.o
 
 # Regras principais
 all: setup_dirs extract generate

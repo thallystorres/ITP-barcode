@@ -40,7 +40,7 @@ int main(int argc, char const *argv[])
     {
         printf("%d", final[i]);
     }
-    printf("\n");
+    printf(".\n");
     free(codigo_barra); //Liberando memória de alocação dinâmica
     return 0;
 }
