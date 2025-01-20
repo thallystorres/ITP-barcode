@@ -36,7 +36,7 @@ int main(int argc, char const *argv[])
         return 1;
     }
     printf("O identificador do código de barras é: ");
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 8; i++)
     {
         printf("%d", final[i]);
     }
