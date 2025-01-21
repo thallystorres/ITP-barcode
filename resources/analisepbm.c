@@ -35,25 +35,38 @@ void erro_encontrado(FILE *arquivo)
 }
 
 //Função que recebe o arquivo enviado e verifique se é válido ou não, possui diversas condicionais que buscam analisar cada problema possível
-void verificar_validade_pbm(FILE *arquivo)
-{
-        if(arquivo == NULL) //Caso não houver arquivo
-    {
+void verificar_validade_pbm(FILE *arquivo) {
+    if (arquivo == NULL) {
         perror("Erro ao abrir o arquivo");
         exit(1);
     }
-    char cabecalho[4];
-    if (fgets(cabecalho, sizeof(cabecalho), arquivo) == NULL)
+    //Pulando linhas ou espaços em branco no início do arquivo
+    int ch;
+    do 
     {
-        printf("Erro ao ler cabeçalho\n"); //Caso haja erro ao ler a primeira linha do bpm, fim de código
+        ch = fgetc(arquivo);
+    } while (isspace(ch));
+    if (ch == EOF) {
+        fprintf(stderr, "Erro! O arquivo está vazio ou mal formatado.\n");
+        erro_encontrado(arquivo);
+    }    
+    //Recoloca o caractere "não vazio" de volta ao fluxo
+    ungetc(ch, arquivo);
+
+    char cabecalho[256];
+    if (!fgets(cabecalho, sizeof(cabecalho), arquivo)) {
+        printf("Erro ao ler o cabeçalho do arquivo .pbm\n");
         erro_encontrado(arquivo);
     }
-    cabecalho[strcspn(cabecalho, "\n")] = '\0'; //Tratamento do cabeçalho
-    if (strcmp(cabecalho, "P1") != 0) //Checa se o cabeçalho é realmente P1, cao não, fim de código
-    {
-        printf("Erro: Arquivo .pbm inválido");
+
+    cabecalho[strcspn(cabecalho, "\r\n")] = '\0'; // Remover o '\n' do final, se existir
+
+    if (strcmp(cabecalho, "P1") != 0) {
+        printf("Erro: Arquivo .pbm inválido (cabeçalho não é P1)\n");
         erro_encontrado(arquivo);
     }
+
+    // O arquivo passou na verificação inicial
 }
 
 //Função que registra em dois ponteiros a largura e altura do bpm, passadas na segunda linha
@@ -69,6 +82,7 @@ void extrair_dimensao_pbm(FILE *arquivo, int *largura, int *altura)
         printf("Erro ao ler as dimensões.\n"); //Caso contrário, fim de código
         erro_encontrado(arquivo);
     }
+    printf("%d %d\n", *largura, *altura);
 }
 
 //Função que extrai o espaçamento lateral e a primeira linha do código de barras
@@ -77,7 +91,7 @@ void extrair_espacamento_codigo(FILE *arquivo, int largura, int *espacamento_lat
     int contador = 0; //Contador que vai ser somado recursivamente a cada linha que contêm apenas 0
 
     //String que irá comportar toda a linha extraída do arquivo. O tamanho da string tem essa forma por contar o número de caracteres 0's e 1's da linha, os espaçamentos (que são o dobro da largura + 1) e o char nulo '\0'
-    char linha[(largura + 1) * 2];
+    char linha[(largura + 2) * 2];
 
     //Enquanto houver linhas, analisa cada uma delas
     while (fgets(linha, sizeof(linha), arquivo) != NULL)
@@ -91,4 +105,5 @@ void extrair_espacamento_codigo(FILE *arquivo, int largura, int *espacamento_lat
 
     *espacamento_lateral = contador; //Atribui o valor de contador para o espaçamento lateral
     strcpy(codigo_barra, linha); //Copia o código de barras extraído para a string
+    printf("%d\n", contador);
 }
