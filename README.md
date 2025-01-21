@@ -25,7 +25,7 @@ make
 make clean
 ```
 
-OBS: Os arquivos gerenciadores do jogo são baseados em código binário em Linux, caso o sistema operacional não consiga executar (Windows por exemplo), poderá usar WSL.
+OBS: Os arquivos gerenciadores do programa são baseados em código binário em Linux, caso o sistema operacional não consiga executar (Windows por exemplo), poderá usar WSL.
 
 ## Execução
 Para rodar o programa de geração de código de barras use o seguinte formato:
