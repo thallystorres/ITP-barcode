@@ -1,6 +1,6 @@
 # Gerador e Leitor de Código de Barras EAN-8
 
-Este projeto consiste em um arquivo `generate.c` gerador de códigos de barra EAN-8 em arquivo `.pbm` que pode ser configurado com diferentes parâmetros de espaçamento, largura e altura do código de barras e nome de arquivo. Ele também valida o código EAN-8 fornecido, garantindo que o código esteja correto antes de gerá-lo.
+Este projeto consiste em um arquivo `generate.c` gerador de códigos de barra EAN-8 em arquivo `.pbm` que pode ser configurado com diferentes parâmetros de espaçamento, largura, altura do código de barras e nome do arquivo. Ele também valida o código EAN-8 fornecido, garantindo que o código esteja correto antes de gerá-lo.
 
 Em paralelo, o arquivo `extract.c` funciona como leitor de código de barras EAN-8, recebendo como parâmetro um arquivo `.pbm` e analisando seu código de barras para extrair em seguida seu código EAN-8.
 
@@ -19,15 +19,15 @@ Em paralelo, o arquivo `extract.c` funciona como leitor de código de barras EAN
 ```
 make
 ```
-
-OBS: Os arquivos gerenciadores do jogo são baseados em código binário em Linux, caso o sistema operacional não consiga executar (Windows por exemplo), poderá usar WSL.
-
-3. Após execução poderá apagar todos os arquivos usados na compilação utilizando o comando:
+ Opcional: Após execução poderá apagar todos os arquivos usados na compilação utilizando o comando:
 
 ```
 make clean
 ```
 
+OBS: Os arquivos gerenciadores do jogo são baseados em código binário em Linux, caso o sistema operacional não consiga executar (Windows por exemplo), poderá usar WSL.
+
+## Execução
 Para rodar o programa de geração de código de barras use o seguinte formato:
 
 ```
@@ -73,7 +73,7 @@ Exemplo:
 ### Validações
 1. **Existência de arquivo**: Caso o arquivo não existir, o programa exibirá uma mensagem de erro.
 2. **Extensão de arquivo**: Caso o arquivo existir mas não possuir a extensão exigida, o programa exibirá uma mensagem de erro.
-3. **Cabeçalho**: Caso o arquivo seja um `.pbm` mas não possuir formato código de barras ou cabeçalho, o programa exibirá uma mensagem de erro.
+3. **Cabeçalho**: Caso o arquivo seja um `.pbm` mas não possuir formato de código de barras ou não houver cabeçalho, o programa exibirá uma mensagem de erro.
 4. **Dígito verificador**: Caso o código de barras seja lido mas o dígito verificador for inválido, o programa exibirá uma mensagem de erro.
 
 ### Exemplo de saída
