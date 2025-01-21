@@ -82,7 +82,6 @@ void extrair_dimensao_pbm(FILE *arquivo, int *largura, int *altura)
         printf("Erro ao ler as dimensões.\n"); //Caso contrário, fim de código
         erro_encontrado(arquivo);
     }
-    printf("%d %d\n", *largura, *altura);
 }
 
 //Função que extrai o espaçamento lateral e a primeira linha do código de barras
@@ -105,5 +104,4 @@ void extrair_espacamento_codigo(FILE *arquivo, int largura, int *espacamento_lat
 
     *espacamento_lateral = contador; //Atribui o valor de contador para o espaçamento lateral
     strcpy(codigo_barra, linha); //Copia o código de barras extraído para a string
-    printf("%d\n", contador);
 }
