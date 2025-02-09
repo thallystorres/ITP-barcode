@@ -105,3 +105,5 @@ O identificador do código de barras é: 23456785.
 - `generate.c`: Arquivo em que há a função `main` da funcionalidade de geração de arquivo `.pbm`.
 
 - `Makefile`: Arquivo de automação de compilação e delete de arquivos compilados.
+
+## Nota final: 10
